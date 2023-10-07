@@ -4,6 +4,7 @@ import pg from 'pg';
 const port = process.env.PORT || 2001;
 
 const app = express();
+app.use(express.json())
 const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
 
@@ -35,9 +36,9 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
         res = await dbClient.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
-            [req.unixTimestamp, req.channel, req.username, req.message, req.displayName]);
+            [req.body.unixTimestamp, req.body.channel, req.body.username, req.body.message, req.body.displayName]);
 
-        console.log(`Inserted ${res.rowCount} rows.`);
+        res.json(`Inserted ${res.rowCount} rows.`)
     } catch (err) {
         console.error(err);
     }
