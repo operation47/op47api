@@ -15,6 +15,9 @@ v1Router.get('/', (req, res) => {
     res.send('api v1');
 });
 v1Router.use('/twitch', v1TwitchRouter);
+v1Router.get('/twitch', (req, res) => {
+    res.send('twitch api v1');
+});
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
