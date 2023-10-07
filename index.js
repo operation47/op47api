@@ -32,6 +32,16 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     });
 });
 
+v1TwitchRouter.post('/insertMessage', async (req, res) => {
+    try {
+        res = await dbClient.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
+            [req.unixTimestamp, req.channel, req.username, req.message, req.displayName]);
+
+        console.log(`Inserted ${res.rowCount} rows.`);
+    } catch (err) {
+        console.error(err);
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
