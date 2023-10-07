@@ -18,10 +18,10 @@ v1Router.use('/twitch', v1TwitchRouter);
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
-    pool.query('SELECT * FROM messages', [channelName], (err, result) => {
+    pool.query('SELECT * FROM messages', (err, result) => {
         if (err) {
             console.log(err);
-            res.send("Internal server error", 500);
+            res.status(500).send('Error retrieving messages from database: ' + err);
             return;
         } else {
             res.json(result.rows);
