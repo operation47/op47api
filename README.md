@@ -1,4 +1,4 @@
 ﻿## Endpoints
 
-### GET /api/v1/twitch/messages/{channel}
-channel without the #
+#### GET /api/v1/twitch/messages/{channel}
+Channel without the \#
