@@ -1,6 +1,7 @@
 ﻿import express from 'express';
 import pg from 'pg';
 
+console.log("test");
 const port = process.env.PORT || 2001;
 
 const app = express();
