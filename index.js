@@ -37,10 +37,10 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
             res.status(500).send('Error retrieving messages from database: ' + err);
             return;
         }
-        console.log(JSON.stringify(result.rows, null, 2));
-        for (const row in result.rows) {
-            console.log("row: ", JSON.stringify(row, null, 2));
-        }
+
+        result.rows.forEach(row => {
+            row.timestamp = new Date(row.timestamp).getTime();
+        });
         res.json(result.rows);
     });
 });
