@@ -12,14 +12,14 @@ const v1TwitchRouter = express.Router();
 app.use(express.json())
 
 // Add general Authorization by Header
-app.use(function(req, res, next) {
-    if (!req.headers.authorization) {
-        return res.status(403).json({ error: 'No credentials sent!' });
-    } else if (req.headers.authorization !== this.API_KEY) {
-        return res.status(401).json({ error: 'Wrong credentials!' });
-    }
-    next();
-});
+// app.use(function(req, res, next) {
+//     if (!req.headers.authorization) {
+//         return res.status(403).json({ error: 'No credentials sent!' });
+//     } else if (req.headers.authorization !== this.API_KEY) {
+//         return res.status(401).json({ error: 'Wrong credentials!' });
+//     }
+//     next();
+// });
 
 app.use('/v1', v1Router);
 
