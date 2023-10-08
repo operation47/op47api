@@ -11,16 +11,6 @@ const v1TwitchRouter = express.Router();
 // Use JSON Middleware for Express to process JSON
 app.use(express.json())
 
-// Add general Authorization by Header
-// app.use(function(req, res, next) {
-//     if (!req.headers.authorization) {
-//         return res.status(403).json({ error: 'No credentials sent!' });
-//     } else if (req.headers.authorization !== this.API_KEY) {
-//         return res.status(401).json({ error: 'Wrong credentials!' });
-//     }
-//     next();
-// });
-
 app.use('/v1', v1Router);
 
 const pool = new pg.Pool();
@@ -31,6 +21,16 @@ v1Router.get('/', (req, res) => {
 v1Router.use('/twitch', v1TwitchRouter);
 v1Router.get('/twitch', (req, res) => {
     res.send('twitch api v1');
+});
+
+// Add general Authorization by Header
+v1TwitchRouter.use((req, res, next) => {
+    if (!req.headers.authorization) {
+        return res.status(403).json({ error: 'No credentials sent!' });
+    } else if (req.headers.authorization !== this.API_KEY) {
+        return res.status(401).json({ error: 'Wrong credentials!' });
+    }
+    next();
 });
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
