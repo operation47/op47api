@@ -35,7 +35,7 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
-        res = await dbClient.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
+        res = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
             [req.body.unixTimestamp, req.body.channel, req.body.username, req.body.message, req.body.displayName]);
 
         res.json(`Inserted ${res.rowCount} rows.`)
