@@ -12,7 +12,7 @@ const v1TwitchRouter = express.Router();
 // Use JSON Middleware for Express to process JSON
 app.use(cors(
     {
-        origin: "https://op47.de"
+        origin: "https://www.op47.de"
     }
 ));
 app.use(express.json())
