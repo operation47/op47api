@@ -38,6 +38,7 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
             return;
         }
         for (const row in result.rows) {
+            console.log(JSON.stringify(row));
             row.timestamp = new Date(row.timestamp).getTime();
         }
         res.json(result.rows);
