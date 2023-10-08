@@ -2,7 +2,7 @@
 import pg from 'pg';
 
 const port = process.env.PORT || 2001;
-const API_KEY = 'thgp673DPP3hFJHoTMMS!s4hRhgxLtN@';
+const API_KEY = process.env.API_KEY;
 
 const app = express();
 const v1Router = express.Router();
