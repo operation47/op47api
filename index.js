@@ -24,14 +24,14 @@ v1Router.get('/twitch', (req, res) => {
 });
 
 // Add general Authorization by Header
-// v1TwitchRouter.use((req, res, next) => {
-//     if (!req.headers.authorization) {
-//         return res.status(403).json({ error: 'No credentials sent!' });
-//     } else if (req.headers.authorization !== this.API_KEY) {
-//         return res.status(401).json({ error: 'Wrong credentials!' });
-//     }
-//     next();
-// });
+v1Router.use((req, res, next) => {
+    if (!req.headers.authorization) {
+        return res.status(403).json({ error: 'No credentials sent!' });
+    } else if (req.headers.authorization !== this.API_KEY) {
+        return res.status(401).json({ error: 'Wrong credentials!' });
+    }
+    next();
+});
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
