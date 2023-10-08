@@ -30,7 +30,7 @@ v1TwitchRouter.use((req, res, next) => {
     } else if (req.get('authorization') !== this.API_KEY) {
         return res.status(401).json({ error: 'Wrong credentials!' });
     }
-    next();
+    return next();
 });
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
