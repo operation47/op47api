@@ -50,7 +50,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
         if (!req.body.timestamp || !req.body.channel || !req.body.user || !req.body.content || !req.body.display_name) {
             console.log('Missing required parameters');
-            res.status(400).send('Missing required parameters');
+            res.status(418).send('Missing required parameters');
             return;
         }
         const data = {
