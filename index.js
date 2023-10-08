@@ -24,7 +24,7 @@ v1Router.get('/twitch', (req, res) => {
 });
 
 // Add general Authorization by Header
-v1Router.use((req, res, next) => {
+app.use((req, res, next) => {
     if (!req.headers.authorization) {
         return res.status(403).json({ error: 'No credentials sent!' });
     } else if (req.headers.authorization !== this.API_KEY) {
