@@ -35,7 +35,7 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
-        console.log(JSON.stringify(req.body, null, 3));
+        console.log(JSON.stringify(req, null, 3));
         if (!req.body) {
             console.log("no body");
             res.status(400).send('Missing required parameters');
