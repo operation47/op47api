@@ -62,7 +62,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             display_name: req.body.display_name
         }
         const result = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
-            [data.timestamp, data.channel, data.user, data.content, data.displayName]);
+            [data.timestamp, data.channel, data.user, data.content, data.display_name]);
 
         console.log(`Inserted ${result.rowCount} rows.`);
         res.json(`Inserted ${result.rowCount} rows.`)
