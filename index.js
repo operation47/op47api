@@ -1,4 +1,4 @@
-﻿import express from 'express';
+﻿import express, { json } from 'express';
 import pg from 'pg';
 import cors from 'cors';
 
@@ -36,9 +36,11 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
             console.log(err);
             res.status(500).send('Error retrieving messages from database: ' + err);
             return;
-        } else {
-            res.json(result.rows);
         }
+        for (const row in result.rows) {
+            row.timestamp = new Date(row.timestamp).getTime();
+        }
+        res.json(result.rows);
     });
 });
 
@@ -52,7 +54,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             return;
         }
         const data = {
-            timestamp: req.body.timestamp,
+            timestamp: new Date(req.body.timestamp).toISOString(),
             channel: req.body.channel,
             user: req.body.user,
             content: req.body.content,
