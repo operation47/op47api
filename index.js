@@ -35,7 +35,7 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
-        if (!req.body.unixTimestamp || !req.body.channel || !req.body.username || !req.body.message || !req.body.displayName) {
+        if (!req.body.timestamp || !req.body.channel || !req.body.user || !req.body.content || !req.body.display_name) {
             console.log("something is missing");
             res.status(400).send('Missing required parameters');
             return;
