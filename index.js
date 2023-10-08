@@ -55,7 +55,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             return;
         }
         const data = {
-            timestamp: new Date(req.body.timestamp).toISOString(),
+            timestamp: new Date(req.body.timestamp*1000).toISOString(),
             channel: req.body.channel,
             user: req.body.user,
             content: req.body.content,
