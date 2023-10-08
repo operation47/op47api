@@ -58,7 +58,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             channel: req.body.channel,
             user: req.body.user,
             content: req.body.content,
-            displayName: req.body.display_name
+            display_name: req.body.display_name
         }
         const result = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
             [data.timestamp, data.channel, data.user, data.content, data.displayName]);
