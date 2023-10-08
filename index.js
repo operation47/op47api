@@ -35,18 +35,16 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     try {
-        console.log(req, null, 3);
-        if (!req.body) {
-            console.log("no body");
+        if (!req.body.timestamp || !req.body.channel || !req.body.user || !req.body.content || !req.body.display_name) {
             res.status(400).send('Missing required parameters');
             return;
         }
         const data = {
-            timestamp: req.body.unixTimestamp,
+            timestamp: req.body.timestamp,
             channel: req.body.channel,
-            user: req.body.username,
-            content: req.body.message,
-            displayName: req.body.displayName
+            user: req.body.user,
+            content: req.body.content,
+            displayName: req.body.display_name
         }
         const result = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
             [data.timestamp, data.channel, data.user, data.content, data.displayName]);
