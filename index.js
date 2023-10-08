@@ -29,16 +29,6 @@ v1Router.get('/twitch', (req, res) => {
     res.send('twitch api v1');
 });
 
-// Add general Authorization by Header
-v1TwitchRouter.use((req, res, next) => {
-    if (!req.get('authorization')) {
-        return res.status(403).json({ error: 'No credentials sent!' });
-    } else if (req.get('authorization') !== API_KEY) {
-        return res.status(401).json({ error: 'Wrong credentials!' });
-    }
-    return next();
-});
-
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
     pool.query('SELECT *, EXTRACT(EPOCH FROM timestamp) AS timestamp FROM messages WHERE channel = $1', [channelName], (err, result) => {
@@ -53,6 +43,8 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
 });
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
+    if (!req.get('authorization')) return res.status(403).json({ error: 'No credentials sent!' });
+    if (req.get('authorization') !== API_KEY) return res.status(401).json({ error: 'Wrong credentials!' });
     try {
         if (!req.body.timestamp || !req.body.channel || !req.body.user || !req.body.content || !req.body.display_name) {
             console.log('Missing required parameters');
