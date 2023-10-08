@@ -1,5 +1,6 @@
 ﻿import express from 'express';
 import pg from 'pg';
+import cors from 'cors';
 
 const port = process.env.PORT || 2001;
 const API_KEY = process.env.API_KEY;
@@ -9,6 +10,11 @@ const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
 
 // Use JSON Middleware for Express to process JSON
+app.use(cors(
+    {
+        origin: "https://op47.de"
+    }
+));
 app.use(express.json())
 
 app.use('/v1', v1Router);
