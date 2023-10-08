@@ -31,7 +31,7 @@ v1Router.get('/twitch', (req, res) => {
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
-    pool.query('SELECT *, EXTRACT(EPOCH FROM timestamp) AS timestamp FROM messages WHERE channel = $1', [channelName], (err, result) => {
+    pool.query('SELECT * FROM messages WHERE channel = $1', [channelName], (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send('Error retrieving messages from database: ' + err);
@@ -58,7 +58,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             content: req.body.content,
             display_name: req.body.display_name
         }
-        const result = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES (TO_TIMESTAMP($1), $2, $3, $4, $5)',
+        const result = await pool.query('INSERT INTO messages (timestamp, channel, "user", content, display_name) VALUES ($1, $2, $3, $4, $5)',
             [data.timestamp, data.channel, data.user, data.content, data.display_name]);
 
         console.log(`Inserted ${result.rowCount} rows.`);
