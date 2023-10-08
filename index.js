@@ -27,7 +27,7 @@ v1Router.get('/twitch', (req, res) => {
 v1TwitchRouter.use((req, res, next) => {
     if (!req.get('authorization')) {
         return res.status(403).json({ error: 'No credentials sent!' });
-    } else if (req.get('authorization') !== this.API_KEY) {
+    } else if (req.get('authorization') !== API_KEY) {
         return res.status(401).json({ error: 'Wrong credentials!' });
     }
     return next();
