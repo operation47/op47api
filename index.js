@@ -44,6 +44,23 @@ v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
         res.json(result.rows);
     });
 });
+v1TwitchRouter.get('/messages/:channel_name/since/:timestamp', (req, res) => {
+    const channelName = "#".concat(req.params.channel_name.toLowerCase());
+    const timestamp = new Date(parseInt(req.params.timestamp));
+
+    pool.query('SELECT * FROM messages WHERE channel = $1 AND timestamp > $2', [channelName, timestamp], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Error retrieving messages from database: ' + err);
+            return;
+        }
+
+        result.rows.forEach(row => {
+            row.timestamp = new Date(row.timestamp).getTime();
+        });
+        res.json(result.rows);
+    });
+});
 
 v1TwitchRouter.post('/insertMessage', async (req, res) => {
     if (!req.get('authorization')) return res.status(403).json({ error: 'No credentials sent!' });
