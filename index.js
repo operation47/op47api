@@ -82,7 +82,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             [data.timestamp, data.channel, data.user, data.content, data.display_name]);
 
         console.log(`Inserted ${result.rowCount} rows.`);
-        fetch('https://op47.de/comm/new_message', {API_KEY: API_KEY});
+        fetch('https://op47.de/comm/new_message', JSON.stringify(data), { method: 'POST' });
         res.json(`Inserted ${result.rowCount} rows.`)
     } catch (err) {
         console.error(err);
