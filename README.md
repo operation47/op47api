@@ -1,7 +1,7 @@
 ﻿## Endpoints
 
 #### GET /v1/twitch/messages/{channel}
-Channel without the \#
+Channel with the \#
 Timestamp in ms since epoch iirc
 
 #### POST /v1/twitch/insertMessage
