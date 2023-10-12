@@ -85,7 +85,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
         // post to op47.de/comms/new_message
 
         const options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'API_KEY': API_KEY
