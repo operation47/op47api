@@ -58,7 +58,7 @@ v1Router.post('/insertClip', async (req, res) => {
         let twitchRes = await fetch(`https://api.twitch.tv/helix/clips?id=${id}`, options);
         twitchRes = await twitchRes.json()
         twitchRes = await twitchRes.data[0]
-        if (!twitchRes.created_at || !twitchRes.url || !twitchRes.title || !twitchRes.channel || !twitchRes.creator_name) {
+        if (!twitchRes.created_at || !twitchRes.url || !twitchRes.title || !twitchRes.broadcaster_name || !twitchRes.creator_name) {
             console.log(twitchRes)
             console.log('Problem with Twitch API');
             res.status(500).send('Internal Server Error');
@@ -68,7 +68,7 @@ v1Router.post('/insertClip', async (req, res) => {
             created_at: new Date(twitchRes.created_at).toISOString(),
             url: twitchRes.url,
             title: twitchRes.title,
-            channel: twitchRes.channel,
+            channel: twitchRes.broadcaster_name,
             creator_name: twitchRes.creator_name
         }
         const result = await pool.query('INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5)',
