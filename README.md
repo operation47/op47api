@@ -6,3 +6,6 @@ Timestamp in ms since epoch iirc
 
 #### POST /v1/twitch/insertMessage
 Request with req.unixTimestamp, req.channel, req.username, req.message, req.displayName in that order
+
+#### POST /v1/insertClip
+

@@ -39,7 +39,7 @@ v1Router.post('/insertClip', async (req, res) => {
     if (req.get('authorization') !== API_KEY) return res.status(401).json({ error: 'Wrong credentials!' });
     try {
         if (!req.body.url) {
-            console.log('Missing required parameter');
+            console.log('Missing required url parameter');
             res.status(400).send('Missing required parameter');
             return;
         }
@@ -59,12 +59,13 @@ v1Router.post('/insertClip', async (req, res) => {
         twitchRes = await twitchRes.json()
         twitchRes = await twitchRes.data[0]
         if (!twitchRes.created_at || !twitchRes.url || !twitchRes.title || !twitchRes.channel || !twitchRes.creator_name) {
+            console.log(twitchRes)
             console.log('Problem with Twitch API');
             res.status(500).send('Internal Server Error');
             return;
         }
         const data = {
-            created_at: new Date(twitchRes.created_at*1000).toISOString(),
+            created_at: new Date(twitchRes.created_at).toISOString(),
             url: twitchRes.url,
             title: twitchRes.title,
             channel: twitchRes.channel,
