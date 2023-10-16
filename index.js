@@ -123,7 +123,7 @@ v1Router.get('/clips/:date', (req, res) => {
     }
     date = date + " 00:00:00"
     console.log('date: "'+date+'"')
-    pool.query(`SELECT * FROM clips WHERE created_at = ${date}`, (err, result) => {
+    pool.query(`SELECT * FROM clips WHERE created_at = "${date}"`, (err, result) => {
         if (err) {
             res.status(500).send('Error retrieving messages from database: ' + err);
             return;
