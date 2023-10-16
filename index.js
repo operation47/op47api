@@ -112,6 +112,24 @@ v1Router.delete('/removeClip', (req, res) => {
     });
 })
 
+v1Router.get('/clips/:date', (req, res) => {
+    let date = req.params.date;
+    if (date.toLowerCase() === 'today') {
+        date = new Date().toISOString().split('T')[0];
+    } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
+        console.log('Invalid date parameter');
+        res.status(422).send('Invalid date parameter. Should be: YYYY-MM-DD');
+        return;
+    }
+    date = date + " 00:00:00"
+    pool.query('SELECT * FROM clips WHERE created_at = "$1"', [date], (err, result) => {
+        if (err) {
+            res.status(500).send('Error retrieving messages from database: ' + err);
+            return;
+        }
+        res.json(result.rows);
+    });})
+
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
     pool.query('SELECT * FROM messages WHERE channel = $1', [channelName], (err, result) => {

@@ -9,6 +9,11 @@ Timestamp in ms since epoch iirc
 
 Request with req.unixTimestamp, req.channel, req.username, req.message, req.displayName in that order
 
+### GET /v1/clips/{date}
+
+ISO date (YYYY-MM-DD)
+or just 'today'
+
 ### POST /v1/insertClip
 
 Request with req.url using a valid twitch clip link (clips.twitch.tv/...)
