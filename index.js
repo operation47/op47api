@@ -110,7 +110,7 @@ v1Router.delete('/removeClip', (req, res) => {
         }
         console.log(`Deleted ${result.rowCount} rows with link: ${newURL}.`);
         res.json(`Deleted ${result.rowCount} entries.`);
-    })
+    });
 })
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
