@@ -99,7 +99,22 @@ v1Router.delete('/removeClip', (req, res) => {
         res.status(422).send('Invalid url parameter');
         return;
     }
-    let urlArr = req.body.url.split('clips.twitch.tv/');
+    let urlArr = req.body.url.split('clips.twitch.tv/');async function start() {
+        let options = {
+            method: 'POST',
+            body: JSON.stringify({
+                url: 'https://www.twitch.tv/stegi/clip/StylishVibrantDiamondKlappa-x-nfnLsFEyNdXDoT',
+            }),
+            headers: {
+                'authorization': 'thgp673DDP2hFJHoTMMS!s4hRhgxLtN@',
+                "Content-type": "application/json; charset=UTF-8"
+            },
+        }
+        let res = await fetch('https://api.op47.de/v1/insertClip', options)
+        res = await res;
+        console.log(res)
+    }
+    start()
     let id = urlArr[urlArr.length - 1].replace('/', '');
     let newURL = 'https://clips.twitch.tv/' + id;
     pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, result) => {
