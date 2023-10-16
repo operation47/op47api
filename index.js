@@ -59,14 +59,6 @@ v1Router.post('/insertClip', async (req, res) => {
         twitchRes = await twitchRes.json();
         twitchRes = await twitchRes.data[0];
         if (!twitchRes.created_at || !twitchRes.url || !twitchRes.title || !twitchRes.broadcaster_name || !twitchRes.creator_name) {
-            console.log(twitchRes)
-            console.log('-----------------------')
-            console.log(twitchRes.created_at)
-            console.log(twitchRes.url)
-            console.log(twitchRes.title)
-            console.log(twitchRes.broadcaster_name)
-            console.log(twitchRes.creator_name)
-            console.log('-----------------------')
             console.log('Problem with Twitch API');
             res.status(500).send('Internal Server Error');
             return;
