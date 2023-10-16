@@ -37,7 +37,7 @@ v1Router.get('/twitch', (req, res) => {
 
 v1Router.post('/insertClip', async (req, res) => {
     if (!req.get('authorization')) return res.status(403).json({ error: 'No password sent!' });
-    if (req.get('authorization') !== RECAP_PASSWORD) return res.status(401).json({ error: 'Wrong credentials!' });
+    if (req.get('authorization') !== RECAP_PASSWORD) return res.status(401).json({ error: 'Wrong password!' });
     try {
         if (!req.body.url) {
             console.log('Missing required url parameter');
@@ -87,8 +87,8 @@ v1Router.post('/insertClip', async (req, res) => {
 })
 
 v1Router.delete('/removeClip', (req, res) => {
-    if (!req.get('authorization')) return res.status(403).json({ error: 'No credentials sent!' });
-    if (req.get('authorization') !== RECAP_PASSWORD) return res.status(401).json({ error: 'Wrong credentials!' });
+    if (!req.get('authorization')) return res.status(403).json({ error: 'No password sent!' });
+    if (req.get('authorization') !== RECAP_PASSWORD) return res.status(401).json({ error: 'Wrong password!' });
     if (!req.body.url) {
         console.log('Missing required url parameter');
         res.status(400).send('Missing required url parameter');
