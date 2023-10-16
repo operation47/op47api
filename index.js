@@ -40,7 +40,7 @@ v1Router.post('/insertClip', async (req, res) => {
     try {
         if (!req.body.url) {
             console.log('Missing required url parameter');
-            res.status(400).send('Missing required parameter');
+            res.status(400).send('Missing required url parameter');
             return;
         }
         let twitchLinkRegex = /^(https?:\/\/)?(www\.)?clips\.twitch\.tv\/\S+$/;
@@ -70,15 +70,47 @@ v1Router.post('/insertClip', async (req, res) => {
             channel: twitchRes.broadcaster_name,
             creator_name: twitchRes.creator_name
         }
-        const result = await pool.query('INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5)',
-            [data.created_at, data.url, data.title, data.channel, data.creator_name]);
-
-        console.log(`Inserted ${result.rowCount} rows.`);
-
-        res.json(`Inserted ${result.rowCount} rows.`);
+        pool.query('INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5)',
+            [data.created_at, data.url, data.title, data.channel, data.creator_name], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send('Error inserting clip into database: ' + err);
+                    return;
+                }
+                console.log(`Inserted clip: ${req.body.url}`);
+                res.json(`Inserted clip: ${req.body.url}`);
+            });
     } catch (err) {
         console.error(err);
     }
+})
+
+v1Router.delete('/removeClip', (req, res) => {
+    if (!req.get('authorization')) return res.status(403).json({ error: 'No credentials sent!' });
+    if (req.get('authorization') !== API_KEY) return res.status(401).json({ error: 'Wrong credentials!' });
+    if (!req.body.url) {
+        console.log('Missing required url parameter');
+        res.status(400).send('Missing required url parameter');
+        return;
+    }
+    let twitchLinkRegex = /^(https?:\/\/)?(www\.)?clips\.twitch\.tv\/\S+$/;
+    if (!twitchLinkRegex.test(req.body.url)) {
+        console.log('Invalid url parameter');
+        res.status(422).send('Invalid url parameter');
+        return;
+    }
+    let urlArr = req.body.url.split('clips.twitch.tv/');
+    let id = urlArr[urlArr.length - 1].replace('/', '');
+    let newURL = 'https://clips.twitch.tv/' + id;
+    pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Error removing clip from database: ' + err);
+            return;
+        }
+        console.log(`Deleted ${result.rowCount} rows with link: ${newURL}.`);
+        res.json(`Deleted ${result.rowCount} entries.`);
+    })
 })
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
