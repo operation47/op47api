@@ -107,7 +107,7 @@ v1Router.delete('/removeClip', (req, res) => {
             res.status(500).send('Error removing clip from database: ' + err);
             return;
         }
-        console.log(`Deleted ${result.rowCount} rows with link: ${newURL}.`);
+        console.log(`Deleted ${result.rowCount} rows with link: ${newURL}`);
         res.json(`Deleted ${result.rowCount} entries.`);
     });
 })
