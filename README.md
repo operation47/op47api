@@ -1,3 +1,5 @@
+# <https://api.op47.de>
+
 ## Endpoints
 
 ### GET /v1/twitch/messages/{channel}
@@ -11,7 +13,7 @@ Request with req.unixTimestamp, req.channel, req.username, req.message, req.disp
 
 ### GET /v1/clips/{date}
 
-ISO date (YYYY-MM-DD)
+ISO date (YYYY-MM-DD) \
 or just 'today'
 
 ### POST /v1/insertClip
