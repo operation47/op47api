@@ -104,7 +104,6 @@ v1Router.delete('/removeClip', (req, res) => {
     let newURL = 'https://clips.twitch.tv/' + id;
     pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, result) => {
         if (err) {
-            console.log(err);
             res.status(500).send('Error removing clip from database: ' + err);
             return;
         }
