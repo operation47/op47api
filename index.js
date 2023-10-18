@@ -81,6 +81,10 @@ v1Router.post('/insertClip', async (req, res) => {
                     return;
                 }
                 console.log(`Inserted clip: ${twitchRes.url}`);
+                const options = {
+                    method: 'GET',
+                };
+                fetch('https://op47.de/comm/new_clip', options);
                 res.json(`Inserted clip: ${twitchRes.url}`);
             });
     } catch (err) {
