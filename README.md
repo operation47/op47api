@@ -18,8 +18,8 @@ or just 'today'
 
 ### POST /v1/insertClip
 
-Request with req.url using a valid twitch clip link (clips.twitch.tv/...)
+Request with req.url using a valid twitch clip link
 
 ### DELETE /v1/removeClip
 
-Request with req.url using a valid twitch clip link (clips.twitch.tv/...)
+Request with req.url using a valid twitch clip link
