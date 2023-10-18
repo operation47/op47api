@@ -44,8 +44,8 @@ v1Router.post('/insertClip', async (req, res) => {
             res.status(400).send('Missing required url parameter');
             return;
         }
-        
-        let twitchLinkRegex = /^(?:https?\:\/\/)?(?:(?:clips|www)\.twitch\.tv\/)(?:(?:[a-zA-Z0-9][\w]{2,24})\/clip\/)?([a-zA-Z0-9-]+)$/;
+
+        let twitchLinkRegex = /^(?:https?\:\/\/)?(?:(?:clips|www)\.twitch\.tv\/)(?:(?:[a-zA-Z0-9][\w]{2,24})\/clip\/)?([a-zA-Z0-9-]+)(?:\S)*$/;
         let match = req.body.url.match(twitchLinkRegex);
         if (!match) {
             console.log('Invalid url parameter');
