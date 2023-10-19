@@ -100,14 +100,15 @@ v1Router.delete('/removeClip', (req, res) => {
         res.status(400).send('Missing required url parameter');
         return;
     }
-    let twitchLinkRegex = /^(https?:\/\/)?(www\.)?clips\.twitch\.tv\/\S+$/;
-    if (!twitchLinkRegex.test(req.body.url)) {
+
+    let twitchLinkRegex = /^(?:https?\:\/\/)?(?:(?:clips|www)\.twitch\.tv\/)(?:(?:[a-zA-Z0-9][\w]{2,24})\/clip\/)?([a-zA-Z0-9-_]+)(?:\S)*$/;
+    let match = req.body.url.match(twitchLinkRegex);
+    if (!match) {
         console.log('Invalid url parameter');
         res.status(422).send('Invalid url parameter');
         return;
     }
-    let urlArr = req.body.url.split('clips.twitch.tv/');
-    let id = urlArr[urlArr.length - 1].replace('/', '');
+    let id = match[match.length - 1];
     let newURL = 'https://clips.twitch.tv/' + id;
     pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, result) => {
         if (err) {
@@ -135,7 +136,8 @@ v1Router.get('/clips/:date', (req, res) => {
             return;
         }
         res.json(result.rows);
-    });})
+    });
+})
 
 v1TwitchRouter.get('/messages/:channel_name', (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
@@ -180,7 +182,7 @@ v1TwitchRouter.post('/insertMessage', async (req, res) => {
             return;
         }
         const data = {
-            timestamp: new Date(req.body.timestamp*1000).toISOString(),
+            timestamp: new Date(req.body.timestamp * 1000).toISOString(),
             channel: req.body.channel,
             user: req.body.user,
             content: req.body.content,
