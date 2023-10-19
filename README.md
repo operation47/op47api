@@ -17,7 +17,7 @@ Currently no API Keys are given out.
 
 To get all messages in a channel use this endpoint. A time can be specified so only messages that were posted to that channel after the given time will be returned.
 
-#### Variants
+**Variants**:
 
 ```http
 GET /v1/twitch/messages/{channel}
@@ -27,14 +27,14 @@ GET /v1/twitch/messages/{channel}
 GET /v1/twitch/messages/{channel}/since/{timestamp}
 ```
 
-#### URL Parameters
+**URL Parameters**:
 
 | Parameter | Description |
 | - | - |
 | `channel` | **Required**. Specify the channel using  `#{channel}` format. |
 | `timestamp` | **Optional**. UNIX-timestamp in milliseconds since epoch. |
 
-#### Example response
+**Example response**:
 
 ```javascript
 [
@@ -65,13 +65,13 @@ Used to log a new message to the service. Only available with Authorization.
 POST /v1/twitch/insertMessage
 ```
 
-#### Headers
+**Headers**:
 
 | Header | Description |
 | - | - |
 | `Authorization` | **Required**. Op47 API Key
 
-#### Body Parameters
+**Body Parameters**:
 
 | Parameter | Description |
 | - | - |
@@ -89,13 +89,13 @@ Use this to get the logged clips that were created on a specified date.
 GET /v1/clips/{date}
 ```
 
-#### URL Parameters
+**URL Parameters**:
 
 | Parameter | Description |
 | - | - |
 | `date` | **Required**. ISO Date (YYYY-MM-DD) or just `today`.|
 
-#### Example response
+**Example response**:
 
 ```js
 [
@@ -118,13 +118,13 @@ Used to log a new Clip to the service. Only available with Authorization.
 POST /v1/insertClip
 ```
 
-#### Headers
+**Headers**:
 
 | Header | Description |
 | - | - |
 | `Authorization` | **Required**. Op47 API Key
 
-#### Body Parameters
+**Body Parameters**:
 
 | Parameter | Description |
 | - | - |
@@ -138,13 +138,13 @@ Used to remove an existing Twitch Clip from the service. Only available with Aut
 DELETE /v1/removeClip
 ```
 
-#### Headers
+**#### **:
 
 | Header | Description |
 | - | - |
 | `Authorization` | **Required**. Op47 API Key
 
-#### Body Parameters
+**Body Parameters**:
 
 | Parameter | Description |
 | - | - |
