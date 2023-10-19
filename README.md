@@ -138,7 +138,7 @@ Used to remove an existing Twitch Clip from the service. Only available with Aut
 DELETE /v1/removeClip
 ```
 
-**#### **:
+**Headers**:
 
 | Header | Description |
 | - | - |
