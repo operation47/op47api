@@ -23,11 +23,11 @@ app.use(express.json());
 app.use(helmet());
 
 app.use("/v1", v1Router);
-v1Router.get("/", (req, res) => {
+v1Router.get("/", (_, res) => {
     res.send("api v1");
 });
 v1Router.use("/twitch", v1TwitchRouter);
-v1Router.get("/twitch", (req, res) => {
+v1Router.get("/twitch", (_, res) => {
     res.send("twitch api v1");
 });
 
@@ -90,7 +90,7 @@ v1Router.post("/insertClip", async (req, res) => {
                 data.channel,
                 data.creator_name,
             ],
-            (err, result) => {
+            (err, _) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send(
@@ -224,7 +224,6 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
             !req.body.content ||
             !req.body.display_name
         ) {
-            console.log("Missing required parameters");
             res.status(400).send("Missing required parameters");
             return;
         }
@@ -247,8 +246,6 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
         );
 
         console.log(`Inserted ${result.rowCount} rows.`);
-        // post to op47.de/comms/new_message
-
         const options = {
             method: "GET",
         };
