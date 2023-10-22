@@ -145,7 +145,7 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        date = new Date().toISOString().split("T")[0];
+        date = localISOString().split("T")[0];
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
@@ -255,6 +255,11 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
         console.error(err);
     }
 });
+
+function localISOString(date = new Date()) {
+    let tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+    return (new Date(Date.now() - tzoffset)).toISOString().slice(0,-1);
+}
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
