@@ -145,7 +145,8 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        date = getAPIdateFormat();
+        let d = new Date();
+        date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getDate();
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
@@ -262,7 +263,7 @@ function getAPIdateFormat(date = new Date(), insert = false) {
     // *2 because database timezone is set to UTC and it automatically subtracts offset when inserting
     if (insert) tzOffset *= 2;
     date.setTime(date.getTime() - tzOffset);
-    return date.toISOString();
+    return date.toISOString().split('T')[0];
 }
 
 app.listen(port, () => {
