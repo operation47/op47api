@@ -146,7 +146,7 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        date = moment(date).tz("Europe/Berlin").format("YYYY-MM-DD");
+        date = moment().tz("Europe/Berlin").format("YYYY-MM-DD");
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
