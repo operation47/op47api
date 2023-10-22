@@ -2,6 +2,7 @@
 import pg from "pg";
 import cors from "cors";
 import helmet from "helmet";
+import moment from "moment-timezone";
 
 const port = process.env.PORT || 2001;
 const API_KEY = process.env.API_KEY;
@@ -75,7 +76,7 @@ v1Router.post("/insertClip", async (req, res) => {
             return;
         }
         const data = {
-            created_at: getAPIdateFormat(new Date(twitchRes.created_at)),
+            created_at: moment(twitchRes.created_at).tz("Europe/Berlin").format("YYYY-MM-DD"),
             url: twitchRes.url,
             title: twitchRes.title,
             channel: twitchRes.broadcaster_name,
@@ -145,7 +146,7 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        date = getAPIdateFormat();
+        date = moment(date).tz("Europe/Berlin").format("YYYY-MM-DD");
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
