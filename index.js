@@ -257,15 +257,6 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
     }
 });
 
-
-function getAPIdateFormat(date = new Date()) {
-    let dayMonthYear = date.toLocaleDateString('Berlin').split('.').reverse(); // e.g. 31.1.1999 => [1999, 1, 31]
-    // add leading 0 for day and month
-    dayMonthYear[1] = ('0' + dayMonthYear[1]).slice(-2);
-    dayMonthYear[2] = ('0' + dayMonthYear[2]).slice(-2);
-    return dayMonthYear.join('-');
-}
-
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
