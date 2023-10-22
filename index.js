@@ -262,7 +262,7 @@ function getAPIdateFormat(date = new Date(), insert = false) {
     // *2 because database timezone is set to UTC and it automatically subtracts offset when inserting
     if (insert) tzOffset *= 2;
     date.setTime(date.getTime() - tzOffset);
-    return date.toISOString().split('T')[0];
+    return date.toISOString();
 }
 
 app.listen(port, () => {
