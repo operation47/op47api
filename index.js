@@ -258,8 +258,8 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
 
 
 function getAPIdateFormat(date) {
-    let tzOffset = (date.getTimezoneOffset() * 60000)
-    date.setTime(date.getTime() - tzOffset)
+    let tzOffset = (date.getTimezoneOffset() * 60000);
+    date.setTime(date.getTime() - tzOffset * 2); // *2 because database timezone automatically subtracts offset once
     return date.toISOString().split('T')[0];
 }
 
