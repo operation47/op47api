@@ -75,7 +75,7 @@ v1Router.post("/insertClip", async (req, res) => {
             return;
         }
         const data = {
-            created_at: new Date(twitchRes.created_at).toISOString(),
+            created_at: getAPIdateFormat(new Date(twitchRes.created_at)),
             url: twitchRes.url,
             title: twitchRes.title,
             channel: twitchRes.broadcaster_name,
@@ -145,7 +145,7 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        date = new Date().toISOString().split("T")[0];
+        date = getAPIdateFormat(new Date());
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
@@ -255,6 +255,14 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
         console.error(err);
     }
 });
+
+
+function getAPIdateFormat(date) {
+    let y = date.getFullYear();
+    let m = ("0" + (date.getMonth() + 1)).slice(-2); // getMonth() is 0-indexed...
+    let d = ("0" + date.getDate()).slice(-2);
+    return y + "-" + m + "-" + d;
+}
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
