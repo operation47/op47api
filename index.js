@@ -75,7 +75,7 @@ v1Router.post("/insertClip", async (req, res) => {
             return;
         }
         const data = {
-            created_at: getAPIdateFormat(new Date(twitchRes.created_at), true),
+            created_at: getAPIdateFormat(new Date(twitchRes.created_at)),
             url: twitchRes.url,
             title: twitchRes.title,
             channel: twitchRes.broadcaster_name,
@@ -145,8 +145,7 @@ v1Router.delete("/removeClip", (req, res) => {
 v1Router.get("/clips/:date", (req, res) => {
     let date = req.params.date;
     if (date.toLowerCase() === "today") {
-        let d = new Date();
-        date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + d.getDate();
+        date = getAPIdateFormat();
     } else if (!/^\d\d\d\d-\d\d-\d\d$/.test(date)) {
         console.log("Invalid date parameter");
         res.status(422).send("Invalid date parameter. Should be: YYYY-MM-DD");
@@ -258,12 +257,12 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
 });
 
 
-function getAPIdateFormat(date = new Date(), insert = false) {
-    let tzOffset = (date.getTimezoneOffset() * 60000);
-    // *2 because database timezone is set to UTC and it automatically subtracts offset when inserting
-    if (insert) tzOffset *= 2;
-    date.setTime(date.getTime() - tzOffset);
-    return date.toISOString().split('T')[0];
+function getAPIdateFormat(date = new Date()) {
+    let dayMonthYear = date.toLocaleDateString('Berlin').split('.').reverse(); // e.g. 31.1.1999 => [1999, 1, 31]
+    // add leading 0 for day and month
+    dayMonthYear[1] = ('0' + dayMonthYear[1]).slice(-2);
+    dayMonthYear[2] = ('0' + dayMonthYear[2]).slice(-2);
+    return dayMonthYear.join('-');
 }
 
 app.listen(port, () => {
