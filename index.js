@@ -258,10 +258,9 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
 
 
 function getAPIdateFormat(date) {
-    let y = date.getFullYear();
-    let m = ("0" + (date.getMonth() + 1)).slice(-2); // getMonth() is 0-indexed...
-    let d = ("0" + date.getDate()).slice(-2);
-    return y + "-" + m + "-" + d;
+    let tzOffset = (date.getTimezoneOffset() * 60000)
+    date.setTime(date.getTime() - tzOffset)
+    return date.toISOString().split('T')[0];
 }
 
 app.listen(port, () => {
