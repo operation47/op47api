@@ -249,7 +249,9 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
         console.log(`Inserted ${result.rowCount} rows.`);
         const options = {
             method: "GET",
+            body: JSON.stringify(data.channel),
         };
+        console.log(options);
         fetch("https://op47.de/comm/new_message", options);
         res.json(`Inserted ${result.rowCount} rows.`);
     } catch (err) {
