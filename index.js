@@ -249,6 +249,9 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
         console.log(`Inserted ${result.rowCount} rows.`);
         const options = {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({channel: data.channel}),
         };
         console.log(options);
