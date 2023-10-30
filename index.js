@@ -32,6 +32,25 @@ v1Router.use("/twitch", v1TwitchRouter);
 v1Router.get("/twitch", (_, res) => {
     res.send("twitch api v1");
 });
+v1Router.get("/wiki/page/:title", async (req, res) => {
+    const title = req.params.title;
+    if(!title) {
+        res.status(400).send("Missing required parameters");
+        return;
+    }
+    try {
+        const result = await pool.query("SELECT * FROM wiki_pages WHERE title = $1", [title]);
+        if(result.rowCount === 0) {
+            res.status(404).send("Wiki page not found");
+            return;
+        }
+        res.status(200).json(result.rows[0]);
+    }
+    catch(err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 v1Router.post("/wiki/create", async (req, res) => {
     console.log("create wiki page");
