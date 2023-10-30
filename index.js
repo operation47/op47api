@@ -32,6 +32,16 @@ v1Router.use("/twitch", v1TwitchRouter);
 v1Router.get("/twitch", (_, res) => {
     res.send("twitch api v1");
 });
+v1Router.get("/wiki/pages", async (_, res) => {
+    try {
+        const result = await pool.query("SELECT title FROM wiki_pages");
+        res.status(200).json(result.rows.map((row) => row.title));
+    }
+    catch(err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+});
 v1Router.get("/wiki/page/:title", async (req, res) => {
     const title = req.params.title;
     if(!title) {
