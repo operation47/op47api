@@ -7,6 +7,7 @@ import moment from "moment-timezone";
 const port = process.env.PORT || 2001;
 const API_KEY = process.env.API_KEY;
 const RECAP_PASSWORD = process.env.RECAP_PASSWORD;
+const WIKI_PASSWORD = process.env.WIKI_PASSWORD;
 
 const TWITCH_AUTH = {
     "client-id": process.env.TWITCH_CLIENT_ID,
@@ -32,6 +33,43 @@ v1Router.get("/twitch", (_, res) => {
     res.send("twitch api v1");
 });
 
+v1Router.post("/wiki/create", async (req, res) => {
+    const password = req.body.password;
+    const title = req.body.title;
+    const content = req.body.content;
+
+    if(!password || !title || !content) {
+        res.status(400).send("Missing required parameters");
+        return;
+    }
+    if(password !== WIKI_PASSWORD) {
+        res.status(401).send("Invalid password");
+        return;
+    }
+    if(await doesWikiPageExist(title)) {
+        res.status(409).send("Wiki page already exists");
+        return;
+    }
+    try {
+        pool.query("INSERT INTO wiki_pages (title, content) VALUES ($1, $2)", [title, content]);
+        res.status(200).send("Success");
+    }
+    catch(err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+async function doesWikiPageExist(title) {
+    if (!title) return false;
+    try {
+        const result = await pool.query("SELECT * FROM wiki WHERE title = $1", [title]);
+        return result.rowCount > 0;
+    }
+    catch(err) {
+        console.error(err);
+        return true;
+    }
+}
 v1Router.post("/insertClip", async (req, res) => {
     if (!req.get("authorization"))
         return res.status(403).json({ error: "No password sent!" });
