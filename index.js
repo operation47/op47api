@@ -81,7 +81,7 @@ v1Router.post("/wiki/create", async (req, res) => {
         return;
     }
     try {
-        pool.query("INSERT INTO wiki_pages (title, content) VALUES ($1, $2)", [title, content]);
+        pool.query("INSERT INTO wiki_pages (title, content) VALUES ($1, $2)", [title.trim(), content]);
         res.status(200).send("Success");
     }
     catch(err) {
