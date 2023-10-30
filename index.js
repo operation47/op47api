@@ -62,7 +62,7 @@ v1Router.post("/wiki/create", async (req, res) => {
 async function doesWikiPageExist(title) {
     if (!title) return false;
     try {
-        const result = await pool.query("SELECT * FROM wiki WHERE title = $1", [title]);
+        const result = await pool.query("SELECT * FROM wiki_pages WHERE title = $1", [title]);
         return result.rowCount > 0;
     }
     catch(err) {
