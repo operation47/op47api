@@ -34,6 +34,7 @@ v1Router.get("/twitch", (_, res) => {
 });
 
 v1Router.post("/wiki/create", async (req, res) => {
+    console.log("create wiki page");
     const password = req.body.password;
     const title = req.body.title;
     const content = req.body.content;
