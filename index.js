@@ -238,7 +238,7 @@ v1Router.get("/clips/:date", (req, res) => {
 v1TwitchRouter.get("/messages/:channel_name", (req, res) => {
     const channelName = "#".concat(req.params.channel_name.toLowerCase());
     pool.query(
-        "SELECT * FROM messages WHERE channel = $1 AND timestamp >= NOW() - INTERVAL '3 days'",
+        "SELECT * FROM messages WHERE channel = $1 AND timestamp >= NOW() - INTERVAL '500 days'",
         [channelName],
         (err, result) => {
             if (err) {
