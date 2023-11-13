@@ -151,7 +151,7 @@ v1Router.post("/insertClip", async (req, res) => {
             creator_name: twitchRes.creator_name,
         };
         pool.query(
-            "INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+            "INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5)",
             [
                 data.created_at,
                 data.url,
@@ -159,7 +159,7 @@ v1Router.post("/insertClip", async (req, res) => {
                 data.channel,
                 data.creator_name,
             ],
-            (err, result) => {
+            (err, _) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send(
@@ -167,12 +167,12 @@ v1Router.post("/insertClip", async (req, res) => {
                     );
                     return;
                 }
-                console.log(`Inserted clip: ${twitchRes.url} with id: ${result.rows}`);
+                console.log(`Inserted clip: ${twitchRes.url}`);
                 const options = {
                     method: "GET",
                 };
                 fetch("https://op47.de/comm/new_clip", options);
-                res.json(`Inserted clip: ${twitchRes.url} with id: ${result.rows}`);
+                res.json(`Inserted clip: ${twitchRes.url}`);
             },
         );
     } catch (err) {
