@@ -214,7 +214,7 @@ v1Router.delete("/removeClip", (req, res) => {
     }
     let twitchId = match[match.length - 1];
     let newURL = "https://clips.twitch.tv/" + twitchId;
-    let dbId = Number.MAX_SAFE_INTEGER;
+    let dbId;
     pool.query(`SELECT id FROM clips WHERE url='${newURL}'`, (err, result) => {
         dbId = result.rows[0].id;
     });
@@ -225,9 +225,11 @@ v1Router.delete("/removeClip", (req, res) => {
         }
         console.log(`Deleted clip: ${newURL}`);
 
-        pool.query(`DELETE FROM clips_aggregate WHERE id=${dbId}`, (err, _) => {
-            if (err) console.log(`Error deleting id ${dbId} from aggregate`);
-        })
+        if (dbId != undefined) {
+            pool.query(`DELETE FROM clips_aggregate WHERE id=${dbId}`, (err, _) => {
+                if (err) console.log(`Error deleting id ${dbId} from aggregate`);
+            })
+        } else console.log(`Error deleting ${newURL} from aggregate`);
 
         res.json(`Deleted clip: ${newURL}`);
     });
