@@ -100,6 +100,30 @@ async function doesWikiPageExist(title) {
         return true;
     }
 }
+
+// TEST ==============================================
+v1Router.post("testInsert", async (req, res) => {
+    try {
+        pool.query(
+            "INSERT INTO test__ (name) VALUES ('test') returning id",
+            (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(
+                        "Error: " + err,
+                    );
+                    return;
+                }
+                console.log(`Inserted with id: ${JSON.stringify(result)}`);
+                res.json(`Inserted with id: ${JSON.stringify(result)}`);
+            },
+        );
+    } catch (err) {
+        console.error(err);
+    }
+})
+// TEST ==============================================
+
 v1Router.post("/insertClip", async (req, res) => {
     if (!req.get("authorization"))
         return res.status(403).json({ error: "No password sent!" });
