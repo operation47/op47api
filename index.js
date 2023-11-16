@@ -212,15 +212,24 @@ v1Router.delete("/removeClip", (req, res) => {
         res.status(422).send("Invalid url parameter");
         return;
     }
-    let id = match[match.length - 1];
-    let newURL = "https://clips.twitch.tv/" + id;
-    pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, result) => {
+    let twitchId = match[match.length - 1];
+    let newURL = "https://clips.twitch.tv/" + twitchId;
+    let dbId = Number.MAX_SAFE_INTEGER;
+    pool.query(`SELECT id FROM clips WHERE url='${newURL}'`, (err, result) => {
+        dbId = result.rows[0].id;
+    });
+    pool.query(`DELETE FROM clips WHERE url='${newURL}'`, (err, _) => {
         if (err) {
             res.status(500).send("Error removing clip from database: " + err);
             return;
         }
-        console.log(`Deleted ${result.rowCount} rows with link: ${newURL}`);
-        res.json(`Deleted ${result.rowCount} entries.`);
+        console.log(`Deleted clip: ${newURL}`);
+
+        pool.query(`DELETE FROM clips_aggregate WHERE id=${dbId}`, (err, _) => {
+            if (err) console.log(`Error deleting id ${dbId} from aggregate`);
+        })
+
+        res.json(`Deleted clip: ${newURL}`);
     });
 });
 
