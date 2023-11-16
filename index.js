@@ -104,8 +104,9 @@ async function doesWikiPageExist(title) {
 // TEST ==============================================
 v1Router.get("/testInsert", async (req, res) => {
     try {
+        const text = (Math.random() + 1).toString(36).substring(7);
         pool.query(
-            "INSERT INTO test__ (name) VALUES ('test') returning id",
+            "INSERT INTO test__ (name) VALUES ('" + text + "') returning id",
             (err, result) => {
                 if (err) {
                     console.log(err);
@@ -114,8 +115,17 @@ v1Router.get("/testInsert", async (req, res) => {
                     );
                     return;
                 }
-                console.log(`Inserted with id: ${JSON.stringify(result)}`);
-                res.json(`Inserted with id: ${JSON.stringify(result)}`);
+                const id = result.rows[0].id;
+                pool.query("SELECT name FROM test__ WHERE id=" + id, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).send(
+                            "Error: " + err,
+                        );
+                        return;
+                    }
+                    res.json(result.rows);
+                });
             },
         );
     } catch (err) {
