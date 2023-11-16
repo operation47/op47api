@@ -101,39 +101,6 @@ async function doesWikiPageExist(title) {
     }
 }
 
-// TEST ==============================================
-v1Router.get("/testInsert", async (req, res) => {
-    try {
-        const text = (Math.random() + 1).toString(36).substring(7);
-        pool.query(
-            "INSERT INTO test__ (name) VALUES ('" + text + "') returning id",
-            (err, result) => {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send(
-                        "Error: " + err,
-                    );
-                    return;
-                }
-                const id = result.rows[0].id;
-                pool.query("SELECT name FROM test__ WHERE id=" + id, (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        res.status(500).send(
-                            "Error: " + err,
-                        );
-                        return;
-                    }
-                    res.json(result.rows);
-                });
-            },
-        );
-    } catch (err) {
-        console.error(err);
-    }
-})
-// TEST ==============================================
-
 v1Router.post("/insertClip", async (req, res) => {
     if (!req.get("authorization"))
         return res.status(403).json({ error: "No password sent!" });
@@ -185,7 +152,7 @@ v1Router.post("/insertClip", async (req, res) => {
             creator_name: twitchRes.creator_name,
         };
         pool.query(
-            "INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5)",
+            "INSERT INTO clips (created_at, url, title, channel, creator_name) VALUES ($1, $2, $3, $4, $5) RETURNING id",
             [
                 data.created_at,
                 data.url,
@@ -193,7 +160,7 @@ v1Router.post("/insertClip", async (req, res) => {
                 data.channel,
                 data.creator_name,
             ],
-            (err, _) => {
+            (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send(
@@ -206,6 +173,18 @@ v1Router.post("/insertClip", async (req, res) => {
                     method: "GET",
                 };
                 fetch("https://op47.de/comm/new_clip", options);
+                const id = result.rows[0].id;
+                const author = req.body.author ? req.body.author : "unknown";
+                pool.query(
+                    "INSERT INTO clips_aggregate (id, views, author) VALUES ($1, $2, $3)",
+                    [id, 0, author],
+                    (err, _) => {
+                        if (err) {
+                            console.log("Error adding aggregate for id: " + id);
+                            return;
+                        }
+                        console.log(`aggregate info inserted for id: ${id}, added by ${author}`);
+                    });
                 res.json(`Inserted clip: ${twitchRes.url}`);
             },
         );
