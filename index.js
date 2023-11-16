@@ -136,7 +136,6 @@ v1Router.post("/insertClip", async (req, res) => {
         if (
             !twitchRes.created_at ||
             !twitchRes.url ||
-            !twitchRes.title ||
             !twitchRes.broadcaster_name ||
             !twitchRes.creator_name
         ) {
@@ -144,10 +143,12 @@ v1Router.post("/insertClip", async (req, res) => {
             res.status(500).send("Internal Server Error");
             return;
         }
+        // twitch clip titles can be empty
+        const clipTitle = !twitchRes.title ? twitchRes.broadcaster_name : twitchRes.title;
         const data = {
             created_at: moment(twitchRes.created_at).tz("Europe/Berlin").format("YYYY-MM-DD"),
             url: twitchRes.url,
-            title: twitchRes.title,
+            title: clipTitle,
             channel: twitchRes.broadcaster_name,
             creator_name: twitchRes.creator_name,
         };
