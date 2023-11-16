@@ -102,7 +102,7 @@ async function doesWikiPageExist(title) {
 }
 
 // TEST ==============================================
-v1Router.post("testInsert", async (req, res) => {
+v1Router.get("/testInsert", async (req, res) => {
     try {
         pool.query(
             "INSERT INTO test__ (name) VALUES ('test') returning id",
