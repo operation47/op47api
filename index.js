@@ -1,5 +1,5 @@
 ﻿import express from "express";
-import pg from "pg";
+import { pool } from "db.js";
 import cors from "cors";
 import helmet from "helmet";
 import moment from "moment-timezone";
@@ -17,7 +17,6 @@ const TWITCH_AUTH = {
 const app = express();
 const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
-const pool = new pg.Pool();
 
 // Use JSON Middleware for Express to process JSON
 app.use(cors({ origin: "*" }));

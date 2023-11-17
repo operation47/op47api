@@ -2,7 +2,13 @@ import bcrypt from "bcrypt";
 import { createHash, randomBytes } from "crypto";
 import { pool } from "./db.js";
 
-// user type einfach ausgedacht
+/**
+ * @typedef {Object} User
+ * @property {number} id
+ * @property {string} username
+ * @property {string} password_hash
+ * @property {string} created_at
+ */
 
 /**
  * Returns the user from a given request if it has a
@@ -17,8 +23,9 @@ export async function getUserFromRequest(req) {
 
     const splitHeader = authHeader.trim().split(" ");
 
-    if (splitHeader.length !== 2 || splitHeader[0].toLowerCase() !== "bearer")
+    if (splitHeader.length !== 2 || splitHeader[0].toLowerCase() !== "bearer") {
         return null;
+    }
     const token = splitHeader[1];
 
     const hashedToken = createHash("sha256").update(token).digest("base64");
@@ -43,25 +50,31 @@ export async function getUserFromRequest(req) {
 }
 
 /**
- * Returns a User if the id is valid else null.
- * @param {number} id
- * @returns {User | null}
+ * Returns a new login token for a user if it is valid else null.
+ * @param {string} username
+ * @param {string} password
+ * @returns {string | null}
  */
-async function getUserById(id) {
-    if (!id) return null;
-    let rows;
-    try {
-        rows = await pool.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [
-            id,
-        ]);
-    } catch (e) {
-        console.error(e);
-        return null;
+export async function login(username, password) {
+    if (!username || !password) return null;
+
+    const user = getUserByUsername(username);
+    if (!user) return null;
+
+    if (bcrypt.compareSync(password, user.password_hash)) {
+        const token = createAuthToken(user.id);
+        if (!token) return null;
+        return token;
     }
-    if (rows.rowCount !== 1) return null;
-    return rows.rows[0];
+    return null;
 }
 
+/**
+ * Tries to register a new user and returns a new auth token if successful else null.
+ * @param {string} username
+ * @param {string} password
+ * @returns {string | null}
+ */
 export async function register(username, password) {
     if (!username || !password) return null;
     try {
@@ -94,26 +107,6 @@ export async function register(username, password) {
 }
 
 /**
- * Returns a new login token for a user if it is valid else null.
- * @param {string} username
- * @param {string} password
- * @returns {string | null}
- */
-export async function login(username, password) {
-    if (!username || !password) return null;
-
-    const user = await getUserByUsername(username);
-    if (!user) return null;
-
-    if (bcrypt.compareSync(password, user.password_hash)) {
-        const token = createAuthToken(user.id);
-        if (!token) return null;
-        return token;
-    }
-    return null;
-}
-
-/**
  * Returns a new auth token for a user or null if user id is not valid.
  * @param {number} userId
  * @returns {string | null}
@@ -125,7 +118,10 @@ async function createAuthToken(userId) {
     const hashedToken = createHash("sha256").update(token).digest("base64");
 
     try {
-        const result = await pool.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [userId]);
+        const result = await pool.query(
+            "SELECT * FROM users WHERE id = $1 LIMIT 1",
+            [userId],
+        );
         if (result.rows.rowCount !== 1) return null;
         await pool.query(
             "INSERT INTO auth_tokens (user_id, token) VALUES ($1, $2)",
@@ -138,8 +134,29 @@ async function createAuthToken(userId) {
 }
 
 /**
+ * Returns a User if the id is valid else null.
+ * @param {number} id
+ * @returns {User | null}
+ */
+async function getUserById(id) {
+    if (!id) return null;
+    let rows;
+    try {
+        rows = await pool.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [
+            id,
+        ]);
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+    if (rows.rowCount !== 1) return null;
+    return rows.rows[0];
+}
+
+/**
  * Returns a new login token for a user if it is valid else null.
  * @param {string} username
+ * @returns {User | null}
  */
 async function getUserByUsername(username) {
     if (!username) return null;
