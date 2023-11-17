@@ -1,5 +1,5 @@
 ﻿import express from "express";
-import { pool } from "db.js";
+import { pool } from "./db.js";
 import cors from "cors";
 import helmet from "helmet";
 import moment from "moment-timezone";
