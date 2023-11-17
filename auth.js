@@ -47,7 +47,7 @@ export async function getUserFromRequest(req) {
  * @param {number} id
  * @returns {User | null}
  */
-export async function getUserById(id) {
+async function getUserById(id) {
     if (!id) return null;
     let rows;
     try {
@@ -118,16 +118,16 @@ export async function login(username, password) {
  * @param {number} userId
  * @returns {string | null}
  */
-function createAuthToken(userId) {
+async function createAuthToken(userId) {
     if (!userId) return null;
 
     const token = createHash("sha256").update(randomBytes(32)).digest("base64");
     const hashedToken = createHash("sha256").update(token).digest("base64");
 
     try {
-        pool.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [userId]);
-        if (rows.rowCount !== 1) return null;
-        +pool.query(
+        const result = await pool.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [userId]);
+        if (result.rows.rowCount !== 1) return null;
+        await pool.query(
             "INSERT INTO auth_tokens (user_id, token) VALUES ($1, $2)",
             [userId, hashedToken],
         );
