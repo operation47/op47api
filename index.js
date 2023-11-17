@@ -36,27 +36,28 @@ v1Router.get("/wiki/pages", async (_, res) => {
     try {
         const result = await pool.query("SELECT title FROM wiki_pages");
         res.status(200).json(result.rows.map((row) => row.title));
-    }
-    catch(err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
     }
 });
 v1Router.get("/wiki/page/:title", async (req, res) => {
     const title = req.params.title;
-    if(!title) {
+    if (!title) {
         res.status(400).send("Missing required parameters");
         return;
     }
     try {
-        const result = await pool.query("SELECT * FROM wiki_pages WHERE title = $1", [title]);
-        if(result.rowCount === 0) {
+        const result = await pool.query(
+            "SELECT * FROM wiki_pages WHERE title = $1",
+            [title],
+        );
+        if (result.rowCount === 0) {
             res.status(404).send("Wiki page not found");
             return;
         }
         res.status(200).json(result.rows[0]);
-    }
-    catch(err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
     }
@@ -68,23 +69,25 @@ v1Router.post("/wiki/create", async (req, res) => {
     const title = req.body.title;
     const content = req.body.content;
 
-    if(!password || !title || !content) {
+    if (!password || !title || !content) {
         res.status(400).send("Missing required parameters");
         return;
     }
-    if(password !== WIKI_PASSWORD) {
+    if (password !== WIKI_PASSWORD) {
         res.status(401).send("Invalid password");
         return;
     }
-    if(await doesWikiPageExist(title)) {
+    if (await doesWikiPageExist(title)) {
         res.status(409).send("Wiki page already exists");
         return;
     }
     try {
-        pool.query("INSERT INTO wiki_pages (title, content) VALUES ($1, $2)", [title.trim(), content]);
+        pool.query("INSERT INTO wiki_pages (title, content) VALUES ($1, $2)", [
+            title.trim(),
+            content,
+        ]);
         res.status(200).send("Success");
-    }
-    catch(err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send("Internal Server Error");
     }
@@ -92,10 +95,12 @@ v1Router.post("/wiki/create", async (req, res) => {
 async function doesWikiPageExist(title) {
     if (!title) return false;
     try {
-        const result = await pool.query("SELECT * FROM wiki_pages WHERE title = $1", [title]);
+        const result = await pool.query(
+            "SELECT * FROM wiki_pages WHERE title = $1",
+            [title],
+        );
         return result.rowCount > 0;
-    }
-    catch(err) {
+    } catch (err) {
         console.error(err);
         return true;
     }
@@ -144,9 +149,13 @@ v1Router.post("/insertClip", async (req, res) => {
             return;
         }
         // twitch clip titles can be empty
-        const clipTitle = !twitchRes.title ? twitchRes.broadcaster_name : twitchRes.title;
+        const clipTitle = !twitchRes.title
+            ? twitchRes.broadcaster_name
+            : twitchRes.title;
         const data = {
-            created_at: moment(twitchRes.created_at).tz("Europe/Berlin").format("YYYY-MM-DD"),
+            created_at: moment(twitchRes.created_at)
+                .tz("Europe/Berlin")
+                .format("YYYY-MM-DD"),
             url: twitchRes.url,
             title: clipTitle,
             channel: twitchRes.broadcaster_name,
@@ -184,8 +193,11 @@ v1Router.post("/insertClip", async (req, res) => {
                             console.log("Error adding aggregate for id: " + id);
                             return;
                         }
-                        console.log(`aggregate info inserted for id: ${id}, added by ${author}`);
-                    });
+                        console.log(
+                            `aggregate info inserted for id: ${id}, added by ${author}`,
+                        );
+                    },
+                );
                 res.json(`Inserted clip: ${twitchRes.url}`);
             },
         );
@@ -227,9 +239,13 @@ v1Router.delete("/removeClip", (req, res) => {
         console.log(`Deleted clip: ${newURL}`);
 
         if (dbId != undefined) {
-            pool.query(`DELETE FROM clips_aggregate WHERE id=${dbId}`, (err, _) => {
-                if (err) console.log(`Error deleting id ${dbId} from aggregate`);
-            })
+            pool.query(
+                `DELETE FROM clips_aggregate WHERE id=${dbId}`,
+                (err, _) => {
+                    if (err)
+                        console.log(`Error deleting id ${dbId} from aggregate`);
+                },
+            );
         } else console.log(`Error deleting ${newURL} from aggregate`);
 
         res.json(`Deleted clip: ${newURL}`);
@@ -345,7 +361,7 @@ v1TwitchRouter.post("/insertMessage", async (req, res) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({channel: data.channel}),
+            body: JSON.stringify({ channel: data.channel }),
         };
         fetch("https://op47.de/comm/new_message", options);
         res.json(`Inserted ${result.rowCount} rows.`);
