@@ -2,6 +2,7 @@
 import cors from "cors";
 import helmet from "helmet";
 import moment from "moment-timezone";
+import authRouter from "./auth_routes.js";
 import { pool } from "./db.js";
 
 const port = process.env.PORT || 2001;
@@ -15,7 +16,7 @@ const TWITCH_AUTH = {
 };
 
 const app = express();
-export const v1Router = express.Router();
+const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
 
 // Use JSON Middleware for Express to process JSON
@@ -28,9 +29,8 @@ v1Router.get("/", (_, res) => {
     res.send("api v1");
 });
 v1Router.use("/twitch", v1TwitchRouter);
-v1Router.get("/twitch", (_, res) => {
-    res.send("twitch api v1");
-});
+v1Router.use("/auth", authRouter);
+
 v1Router.get("/wiki/pages", async (_, res) => {
     try {
         const result = await pool.query("SELECT title FROM wiki_pages");
