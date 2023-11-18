@@ -17,21 +17,13 @@ import { pool } from "./db.js";
  * @returns {Promise<User>}
  */
 export async function getUserFromRequest(req) {
-    if (!req || !req.headers) {
-        return Promise.reject("Invalid request");
+    let token;
+    try {
+        token = await getTokenFromRequest(req);
+    } catch (e) {
+        return Promise.reject(e);
     }
 
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return Promise.reject("Missing authorization header");
-    }
-
-    const splitHeader = authHeader.trim().split(" ");
-    if (splitHeader.length !== 2 || splitHeader[0].toLowerCase() !== "bearer") {
-        return Promise.reject("Invalid authorization header format");
-    }
-
-    const token = splitHeader[1];
     const hashedToken = createHash("sha256").update(token).digest("base64");
 
     try {
@@ -47,6 +39,30 @@ export async function getUserFromRequest(req) {
         console.error(e);
         return Promise.reject("Something went wrong");
     }
+}
+
+/**
+ * Returns the token from a given request if it has a
+ * valid auth token otherwise the promise will be rejected.
+ * @param {Request} req
+ * @returns {Promise<User>}
+ */
+export async function getTokenFromRequest(req) {
+    if (!req || !req.headers) {
+        return Promise.reject("Invalid request");
+    }
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return Promise.reject("Missing authorization header");
+    }
+
+    const splitHeader = authHeader.trim().split(" ");
+    if (splitHeader.length !== 2 || splitHeader[0].toLowerCase() !== "bearer") {
+        return Promise.reject("Invalid authorization header format");
+    }
+
+    return splitHeader[1];
 }
 
 /**
@@ -119,6 +135,31 @@ export async function register(username, password) {
             return Promise.reject("Error loggin in (should never happen)");
         }
         return token;
+    } catch (e) {
+        console.error(e);
+        return Promise.reject("Something went wrong");
+    }
+}
+
+/**
+    * Revokes the given auth token if it is valid, otherwise rejects the promise.
+    * @param {string} token
+    * @returns {Promise<void>}
+*/
+export async function revokeToken(token) {
+    if (!token) {
+        return Promise.reject("Token must be provided");
+    }
+    const hashedToken = createHash("sha256").update(token).digest("base64");
+    try {
+        const result = await pool.query(
+            "DELETE FROM auth_tokens WHERE token = $1",
+            [hashedToken],
+        );
+
+        if (result.rowCount !== 1) {
+            return Promise.reject("Invalid token");
+        }
     } catch (e) {
         console.error(e);
         return Promise.reject("Something went wrong");

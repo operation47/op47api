@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register } from "./auth.js";
+import { login, register, revokeToken, getTokenFromRequest } from "./auth.js";
 
 const authRouter = express.Router();
 
@@ -33,6 +33,17 @@ authRouter.post("/register", async (req, res) => {
     }
 
     res.send(token);
+});
+
+authRouter.post("/logout", async (req, res) => {
+    try {
+        const token = await getTokenFromRequest(req);
+        await revokeToken(token);
+    } catch (e) {
+        res.status(401).send("Unauthorized " + e);
+        return;
+    }
+    res.send("OK");
 });
 
 export default authRouter;
