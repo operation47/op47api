@@ -134,6 +134,7 @@ async function createAuthToken(userId) {
     if (!userId) {
         return Promise.reject("User id must be provided");
     }
+    console.log("userid is " + userId)
 
     try {
         const result = await pool.query(
