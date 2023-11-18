@@ -74,7 +74,8 @@ export async function login(username, password) {
     let token;
     try {
         token = await createAuthToken(user.id);
-    } catch (_) {
+    } catch (e) {
+        return Promise.reject(e);
         return Promise.reject("Could not create auth token");
     }
 
