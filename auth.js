@@ -62,9 +62,8 @@ export async function login(username, password) {
 
     let user;
     try {
-        await getUserByUsername(username);
+        user = await getUserByUsername(username);
     } catch (_) {
-        console.log("here");
         return Promise.reject("Invalid username or password");
     }
 
