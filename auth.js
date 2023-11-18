@@ -134,15 +134,12 @@ async function createAuthToken(userId) {
     if (!userId) {
         return Promise.reject("User id must be provided");
     }
-    console.log("userid is " + userId)
 
     try {
         const result = await pool.query(
             "SELECT * FROM users WHERE id = $1 LIMIT 1",
             [userId],
         );
-        console.log(result.rows)
-        console.log("rowslength: ", result.rows.length)
 
         if (result.rows.length !== 1) {
             return Promise.reject("User not found");
