@@ -141,6 +141,7 @@ async function createAuthToken(userId) {
             "SELECT * FROM users WHERE id = $1 LIMIT 1",
             [userId],
         );
+        console.log(result.rows[0])
 
         if (result.rows.rowCount !== 1) {
             return Promise.reject("User not found");
