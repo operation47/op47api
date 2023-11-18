@@ -43,7 +43,7 @@ export async function getUserFromRequest(req) {
 
     try {
         const result = await pool.query(
-            "SELECT users.* FROM users JOIN auth_tokens ON auth_tokens.user_id = users.id LIMIT 1",
+            "SELECT users.* FROM users JOIN auth_tokens ON auth_tokens.user_id = users.id WHERE auth_tokens.token = $1 LIMIT 1",
             [hashedToken],
         );
         if (result.rows.length !== 1) {
