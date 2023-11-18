@@ -1,8 +1,8 @@
 ﻿import express from "express";
-import { pool } from "./db.js";
 import cors from "cors";
 import helmet from "helmet";
 import moment from "moment-timezone";
+import { pool } from "./db.js";
 
 const port = process.env.PORT || 2001;
 const API_KEY = process.env.API_KEY;
@@ -14,8 +14,8 @@ const TWITCH_AUTH = {
     authorization: process.env.TWITCH_OAUTH,
 };
 
-const app = express();
-const v1Router = express.Router();
+export const app = express();
+export const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
 
 // Use JSON Middleware for Express to process JSON
