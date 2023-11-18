@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import moment from "moment-timezone";
 import authRouter from "./auth_routes.js";
+import { require_auth } from "./auth.js";
 import { pool } from "./db.js";
 
 const port = process.env.PORT || 2001;
@@ -30,6 +31,10 @@ v1Router.get("/", (_, res) => {
 });
 v1Router.use("/twitch", v1TwitchRouter);
 v1Router.use("/auth", authRouter);
+
+v1Router.get("/test_auth", require_auth, () => {
+    res.send("authenticated");
+});
 
 v1Router.get("/wiki/pages", async (_, res) => {
     try {

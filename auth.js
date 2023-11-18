@@ -11,6 +11,21 @@ import { pool } from "./db.js";
  */
 
 /**
+ * Middleware that forces the user to be authenticated
+ * @param {Request} req
+ * @param {Response} res
+ * @param {Function} next
+ */
+export async function require_auth(req, res, next) {
+    try {
+        await getUserFromRequest(req);
+        next();
+    } catch (e) {
+        res.status(401).json({ error: e });
+    }
+}
+
+/**
  * Returns the user from a given request if it has a
  * valid auth token otherwise the promise will be rejected.
  * @param {Request} req
@@ -45,7 +60,7 @@ export async function getUserFromRequest(req) {
  * Returns the token from a given request if it has a
  * valid auth token otherwise the promise will be rejected.
  * @param {Request} req
- * @returns {Promise<User>}
+ * @returns {Promise<string>}
  */
 export async function getTokenFromRequest(req) {
     if (!req || !req.headers) {
