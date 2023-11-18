@@ -39,7 +39,7 @@ export async function getUserFromRequest(req) {
             "SELECT users.* FROM users JOIN auth_tokens ON auth_tokens.user_id = users.id LIMIT 1",
             [hashedToken],
         );
-        if (result.rowCount !== 1) {
+        if (result.rows.length !== 1) {
             return Promise.reject("Invalid authorization token");
         }
         return result.rows[0];
@@ -98,7 +98,7 @@ export async function register(username, password) {
             "SELECT * FROM users WHERE username = $1 LIMIT 1",
             [username],
         );
-        if (existingUser.rowCount !== 0) {
+        if (existingUser.rows.length !== 0) {
             return Promise.reject("Username already exists");
         }
     } catch (e) {
@@ -141,10 +141,10 @@ async function createAuthToken(userId) {
             "SELECT * FROM users WHERE id = $1 LIMIT 1",
             [userId],
         );
-        console.log(result.rows[0])
-        console.log("rowcount: ", result.rows.rowCount)
+        console.log(result.rows)
+        console.log("rowslength: ", result.rows.length)
 
-        if (result.rows.rowCount !== 1) {
+        if (result.rows.length !== 1) {
             return Promise.reject("User not found");
         }
 
@@ -180,7 +180,7 @@ async function getUserById(id) {
             "SELECT * FROM users WHERE id = $1 LIMIT 1",
             [id],
         );
-        if (result.rowCount !== 1) {
+        if (result.rows.length !== 1) {
             return Promise.reject("User not found");
         }
         return result.rows[0];
@@ -206,7 +206,7 @@ async function getUserByUsername(username) {
             [username],
         );
 
-        if (result.rowCount !== 1) {
+        if (result.rows.length !== 1) {
             return Promise.reject("User not found");
         }
         return result.rows[0];
