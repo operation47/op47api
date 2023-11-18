@@ -14,7 +14,7 @@ const TWITCH_AUTH = {
     authorization: process.env.TWITCH_OAUTH,
 };
 
-export const app = express();
+const app = express();
 export const v1Router = express.Router();
 const v1TwitchRouter = express.Router();
 
