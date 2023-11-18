@@ -5,7 +5,7 @@ const authRouter = express.Router();
 
 authRouter.post("/login", async (req, res) => {
     if (!req.body || !req.body.username || !req.body.password) {
-        res.status(400).send("Bad Request");
+        res.status(400).json({ error: "Bad Request " });
         return;
     }
     let token;
@@ -16,12 +16,12 @@ authRouter.post("/login", async (req, res) => {
         return;
     }
 
-    res.send(token);
+    res.json({ token: token });
 });
 
 authRouter.post("/register", async (req, res) => {
     if (!req.body || !req.body.username || !req.body.password) {
-        res.status(400).send("Bad Request");
+        res.status(400).json({ error: "Bad Request " });
         return;
     }
     let token;
@@ -32,7 +32,7 @@ authRouter.post("/register", async (req, res) => {
         return;
     }
 
-    res.send(token);
+    res.json({ token: token });
 });
 
 authRouter.post("/logout", async (req, res) => {
@@ -40,10 +40,10 @@ authRouter.post("/logout", async (req, res) => {
         const token = await getTokenFromRequest(req);
         await revokeToken(token);
     } catch (e) {
-        res.status(401).send("Unauthorized " + e);
+        res.status(401).json({ error: e });
         return;
     }
-    res.send("OK");
+    res.status(200).json({ message: "OK" });
 });
 
 export default authRouter;
