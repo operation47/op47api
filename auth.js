@@ -142,6 +142,7 @@ async function createAuthToken(userId) {
             [userId],
         );
         console.log(result.rows[0])
+        console.log("rowcount: ", result.rows.rowCount)
 
         if (result.rows.rowCount !== 1) {
             return Promise.reject("User not found");
