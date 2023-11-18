@@ -19,14 +19,14 @@ authRouter.post("/login", async (req, res) => {
     res.send(token);
 });
 
-authRouter.post("/register", (req, res) => {
+authRouter.post("/register", async (req, res) => {
     if (!req.body || !req.body.username || !req.body.password) {
         res.status(400).send("Bad Request");
         return;
     }
     let token;
     try {
-        token = register(req.body.username, req.body.password);
+        token = await register(req.body.username, req.body.password);
     } catch (e) {
         res.status(401).send("Unauthorized" + e.message);
         return;
