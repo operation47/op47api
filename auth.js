@@ -142,10 +142,10 @@ export async function register(username, password) {
 }
 
 /**
-    * Revokes the given auth token if it is valid, otherwise rejects the promise.
-    * @param {string} token
-    * @returns {Promise<void>}
-*/
+ * Revokes the given auth token if it is valid, otherwise rejects the promise.
+ * @param {string} token
+ * @returns {Promise<void>}
+ */
 export async function revokeToken(token) {
     if (!token) {
         return Promise.reject("Token must be provided");
