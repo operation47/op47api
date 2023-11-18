@@ -12,7 +12,7 @@ authRouter.post("/login", async (req, res) => {
     try {
         token = await login(req.body.username, req.body.password);
     } catch (e) {
-        res.status(401).send("Unauthorized" + e.message);
+        res.status(401).send("Unauthorized " + e);
         return;
     }
 
@@ -28,7 +28,7 @@ authRouter.post("/register", async (req, res) => {
     try {
         token = await register(req.body.username, req.body.password);
     } catch (e) {
-        res.status(401).send("Unauthorized" + e.message);
+        res.status(401).send("Unauthorized " + e);
         return;
     }
 
