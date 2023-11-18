@@ -32,7 +32,7 @@ v1Router.get("/", (_, res) => {
 v1Router.use("/twitch", v1TwitchRouter);
 v1Router.use("/auth", authRouter);
 
-v1Router.get("/test_auth", require_auth, () => {
+v1Router.get("/test_auth", require_auth, (req, res) => {
     res.send("authenticated");
 });
 
